@@ -2,7 +2,7 @@
   "name": "cumulative-recorder",
   "version": "1.0.0",
   "description": "A digital version of the cumulative recorder invented by B.F. Skinner in the 1930s.",
-  "main": "app.js",
+  "main": "bin/www",
   "scripts": {
     "start": "node ./bin/www",
     "test": "echo \"Error: no test specified\" && exit 1"
