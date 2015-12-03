@@ -108,7 +108,8 @@ var Chart = function(){
 			type: "line",
 			dataPoints: dps,
 			lineThickness: 1,
-			lineDashType: "solid"
+			lineDashType: "solid",
+			markerSize: 0
 		}]
 	});
 	chart.render();
