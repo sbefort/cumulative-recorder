@@ -63,6 +63,7 @@ var DataRecorder = function(timer) {
 			dataPoints.push({x: xAxisTime, y: responseCount});
 			xAxisTime = xAxisTime + 0.5;
 		};
+		//console.log(dataPoints);
 		chart.setDataPoints(dataPoints);
 		chart.updateChart();
 	}
@@ -73,6 +74,56 @@ var DataRecorder = function(timer) {
 
 	var dataPointAudit = function(){
 		return Math.ceil((performance.now() - timer.getStartTime()) / 500);
+	}
+
+}
+
+var Chart = function(){
+	var dps = [];
+	var xAxisMax = 300;
+
+	var chart = new CanvasJS.Chart("cumulative-recorder",
+	{
+		zoomEnabled: true,
+		title :{
+			text: "Cumulative Recorder Demo",
+			fontFamily: "Helvetica Neue,Helvetica,Arial,sans-serif",
+			fontSize: 30,
+		},
+		axisX:{
+			maximum: xAxisMax,
+			title: "Time in Seconds",
+			interval: 30,
+			intervalType: "seconds",
+			titleFontFamily: "Helvetica Neue,Helvetica,Arial,sans-serif",
+			titleFontSize: 22
+		},
+		axisY:{
+			title: "Response Count",
+			interval: 10,
+			titleFontFamily: "Helvetica Neue,Helvetica,Arial,sans-serif",
+			titleFontSize: 22
+		},
+		data: [{
+			type: "line",
+			dataPoints: dps,
+			lineThickness: 1,
+			lineDashType: "solid"
+		}]
+	});
+	chart.render();
+
+	this.setDataPoints = function(data) {
+		if (data.length > 600) {
+			delete chart.options.axisX.maximum;
+		}
+		dps = data;
+	}
+
+	this.updateChart = function() {
+		//console.log(dps);
+		chart.options.data[0].dataPoints = dps;
+		chart.render();
 	}
 
 }
@@ -119,58 +170,6 @@ var Timer = function () {
 
 		return zeroString+n;
 	}
-}
-
-var Chart = function(){
-	var dps = [];
-	var xAxisMax = 300;
-
-	var chart = new CanvasJS.Chart("cumulative-recorder",
-	{
-		zoomEnabled: true,
-		title :{
-			text: "Cumulative Recorder Demo",
-			fontFamily: "Helvetica Neue,Helvetica,Arial,sans-serif",
-			fontSize: 30,
-		},
-		axisX:{
-			maximum: xAxisMax,
-			title: "Time in Seconds",
-			interval: 30,
-			intervalType: "seconds",
-			titleFontFamily: "Helvetica Neue,Helvetica,Arial,sans-serif",
-			titleFontSize: 22
-		},
-		axisY:{
-			title: "Response Count",
-			interval: 10,
-			titleFontFamily: "Helvetica Neue,Helvetica,Arial,sans-serif",
-			titleFontSize: 22
-		},
-		data: [{
-			type: "line",
-			dataPoints: dps,
-			lineThickness: 1,
-			lineDashType: "solid"
-		}]
-	});
-	chart.render();
-
-	this.setDataPoints = function(data) {
-		if (data.length > (xAxisMax * 2)){
-			data.splice(0, data.length - (xAxisMax * 2));
-			delete chart.options.axisX.maximum;
-		}
-		console.log(data.length);
-		dps = data;
-	}
-
-	this.updateChart = function() {
-		//console.log(dps);
-		chart.options.data[0].dataPoints = dps;
-		chart.render();
-	}
-
 }
 
 window.performance = window.performance || {};
