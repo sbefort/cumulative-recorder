@@ -43,11 +43,18 @@ var DataRecorder = function(timer) {
 	var dataPoints = [];
 	var responseCount = 0;
 	var xAxisTime = 0;
+	var eventCount = 1;
 	var chart = new Chart();
 
+	var displayEvent = function(type, timestamp) {
+		$('#timestamps tbody').prepend('<tr><td>'+eventCount+'</td><td>'+type+'</td><td>'+timestamp+'</td></tr>');
+		eventCount = eventCount + 1;
+	}
+
 	this.recordResponseTime = function(){
-		responseTimes.push(timer.formatTime());
-		console.log(responseTimes);
+		var responseTime = timer.formatTime();
+		responseTimes.push(responseTime);
+		displayEvent('Response', responseTime);
 	}
 
 	this.updateDataPoints = function(){
