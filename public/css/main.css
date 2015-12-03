@@ -1,3 +1,11 @@
 .btn-space {
 	margin: 0 2px;
 }
+
+.table th {
+	text-align: center;
+}
+
+.table {
+	margin-top: 20px;
+}
