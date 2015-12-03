@@ -5,7 +5,12 @@ block content
 		.row
 			.col-xs-12.col-md-9
 				#cumulative-recorder
-			.col-xs-12.col-md-3 Buttons go here.
+			.col-xs-12.col-md-3.text-center
+				h2#timer 00:00:00.0
+				button#start(type='button', class='btn btn-success btn-space' style='min-width: 120px') Start
+				button#stop(type='button', class='btn btn-danger btn-space collapse') Stop
+				button#reinforcer(type='button', class='btn btn-primary btn-space collapse') Reinforcer
+				button#response(type='button', class='btn btn-success btn-space collapse') Response
 
 block extra
 	script(src='/js/cumulative-recorder.js')
