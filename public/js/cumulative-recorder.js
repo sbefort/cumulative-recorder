@@ -109,7 +109,7 @@ var Chart = function(){
 			dataPoints: dps,
 			lineThickness: 1,
 			lineDashType: "solid",
-			markerSize: 0
+			markerType: "none"
 		}]
 	});
 	chart.render();
