@@ -47,7 +47,7 @@ var DataRecorder = function(timer) {
 	var chart = new Chart();
 
 	var displayEvent = function(type, timestamp) {
-		$('#timestamps tbody').prepend('<tr><td>'+eventCount+'</td><td>'+type+'</td><td>'+timestamp+'</td></tr>');
+		$('#timestamps tbody').prepend('<tr><td>'+eventCount+'</td><td><span class="label label-success">'+type+'</span></td><td>'+timestamp+'</td></tr>');
 		eventCount = eventCount + 1;
 	}
 
@@ -171,16 +171,6 @@ var Chart = function(){
 		chart.render();
 	}
 
-/*
-	function updateChart(){
-		dps.push({x: index,y: 1});
-		if (index > xAxisMax){
-			dps.shift();
-			delete chart.options.axisX.maximum;
-		}
-		chart.render();
-	}
-*/
 }
 
 window.performance = window.performance || {};
