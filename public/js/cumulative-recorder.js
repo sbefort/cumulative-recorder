@@ -8,12 +8,12 @@ $(document).ready(function() {
 
 	var chart = new Chart(); // Show a blank chart upon page load.
 
-	$('#start').click(function() {
+	$('#start').click(function(e) {
+		e.preventDefault();
 		$('#start').hide();
 		$('#stop').show();
 		$('#reinforcer').show();
 		$('#response').show();
-		$('#reinforcer').prop('disabled', true);
 
 		timer = new Timer();
 		dataRecorder = new DataRecorder(timer);
@@ -22,17 +22,25 @@ $(document).ready(function() {
 		dataRecorderId = setInterval(dataRecorder.updateDataPoints, 1000);
 	});
 
-	$('#stop').click(function() {
+	$('#stop').click(function(e) {
+		e.preventDefault();
 		$('button').prop('disabled', true);
 		dataRecorder.updateDataPoints();
 		clearInterval(timerId);
 		clearInterval(dataRecorderId);
 	});
 
-	$('#response').click(function() {
+	$('#response').click(function(e) {
+		e.preventDefault();
 		dataRecorder.recordResponseTime();
 		dataRecorder.updateDataPoints();
 		dataRecorder.incrementResponseCount();
+	});
+
+	$('#reinforcer').click(function(e) {
+		e.preventDefault();
+		dataRecorder.recordReinforcerTime();
+		dataRecorder.updateDataPoints();
 	});
 
 });
@@ -40,6 +48,7 @@ $(document).ready(function() {
 var DataRecorder = function(timer) {
 	
 	var responseTimes = [];
+	var reinforcerTimes = [];
 	var dataPoints = [];
 	var responseCount = 0;
 	var xAxisTime = 0;
@@ -47,7 +56,8 @@ var DataRecorder = function(timer) {
 	var chart = new Chart();
 
 	var displayEvent = function(type, timestamp) {
-		$('#timestamps tbody').prepend('<tr><td>'+eventCount+'</td><td><span class="label label-success">'+type+'</span></td><td>'+timestamp+'</td></tr>');
+		var labelClass = getLabelClass(type);
+		$('#timestamps tbody').prepend('<tr><td>'+eventCount+'</td><td><span class="label'+labelClass+'">'+type+'</span></td><td>'+timestamp+'</td></tr>');
 		eventCount = eventCount + 1;
 	}
 
@@ -55,6 +65,12 @@ var DataRecorder = function(timer) {
 		var responseTime = timer.formatTime();
 		responseTimes.push(responseTime);
 		displayEvent('Response', responseTime);
+	}
+
+	this.recordReinforcerTime = function(){
+		var reinforcerTime = timer.formatTime();
+		reinforcerTimes.push(reinforcerTime);
+		displayEvent('Reinforcer', reinforcerTime);
 	}
 
 	this.updateDataPoints = function(){
@@ -72,6 +88,17 @@ var DataRecorder = function(timer) {
 		responseCount = responseCount + 1;
 	}
 
+	var getLabelClass = function(eventType){
+		var labelClass = '';
+		if (eventType === 'Response') {
+			return ' label-success';
+		}
+		else if (eventType === 'Reinforcer') {
+			return ' label-primary';
+		}
+		return '';
+	}
+
 	var dataPointAudit = function(){
 		return Math.ceil((performance.now() - timer.getStartTime()) / 500);
 	}
@@ -80,6 +107,7 @@ var DataRecorder = function(timer) {
 
 var Chart = function(){
 	var dps = [];
+	var marks = [];
 	var xAxisMax = 300;
 
 	var chart = new CanvasJS.Chart("cumulative-recorder",
@@ -110,6 +138,13 @@ var Chart = function(){
 			lineThickness: 1,
 			lineDashType: "solid",
 			markerType: "none"
+		},
+		{
+			type: "line",
+			dataPoints: marks,
+			lineThickness: 1,
+			lineDashType: "solid",
+			markerType: "cross"
 		}]
 	});
 	chart.render();
