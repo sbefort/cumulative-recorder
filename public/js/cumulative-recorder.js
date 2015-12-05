@@ -49,7 +49,8 @@ var DataRecorder = function(timer) {
 	
 	var responseTimes = [];
 	var reinforcerTimes = [];
-	var dataPoints = [];
+	var responseDataPointsAll = [];
+	var responseDataPointsVisible = [];
 	var responseCount = 0;
 	var xAxisTime = 0;
 	var eventCount = 1;
@@ -74,13 +75,13 @@ var DataRecorder = function(timer) {
 	}
 
 	this.updateDataPoints = function(){
-		var nowDataPointTotal = dataPointAudit();
-		for (var i=dataPoints.length; i<nowDataPointTotal; i++) {
-			dataPoints.push({x: xAxisTime, y: responseCount});
+		var pendingDataPointTotal = dataPointAudit();
+		for (var i=responseDataPointsAll.length; i<pendingDataPointTotal; i++) {
+			responseDataPointsAll.push({x: xAxisTime, y: responseCount});
+			responseDataPointsVisible.push({x: xAxisTime, y: responseCount});
 			xAxisTime = xAxisTime + 0.5;
 		};
-		//console.log(dataPoints);
-		chart.setDataPoints(dataPoints);
+		chart.setDataPoints(responseDataPointsVisible);
 		chart.updateChart();
 	}
 
@@ -106,8 +107,8 @@ var DataRecorder = function(timer) {
 }
 
 var Chart = function(){
-	var dps = [];
-	var marks = [];
+	var responseDataPoints = [];
+	var reinforcerDataPoints = [];
 	var xAxisMax = 300;
 
 	var chart = new CanvasJS.Chart("cumulative-recorder",
@@ -134,14 +135,14 @@ var Chart = function(){
 		},
 		data: [{
 			type: "line",
-			dataPoints: dps,
+			dataPoints: responseDataPoints,
 			lineThickness: 1,
 			lineDashType: "solid",
 			markerType: "none"
 		},
 		{
 			type: "line",
-			dataPoints: marks,
+			dataPoints: reinforcerDataPoints,
 			lineThickness: 1,
 			lineDashType: "solid",
 			markerType: "cross"
@@ -150,15 +151,15 @@ var Chart = function(){
 	chart.render();
 
 	this.setDataPoints = function(data) {
-		if (data.length > 600) {
+		if (data.length > 601) {
+			data.splice(0, (data.length-601));
 			delete chart.options.axisX.maximum;
 		}
-		dps = data;
+		responseDataPoints = data;
 	}
 
 	this.updateChart = function() {
-		//console.log(dps);
-		chart.options.data[0].dataPoints = dps;
+		chart.options.data[0].dataPoints = responseDataPoints;
 		chart.render();
 	}
 
