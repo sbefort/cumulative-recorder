@@ -40,15 +40,17 @@ $(document).ready(function() {
 	$('#reinforcer').click(function(e) {
 		e.preventDefault();
 		dataRecorder.recordReinforcerTime();
-		dataRecorder.updateDataPoints();
+		dataRecorder.updateDataPoints('Reinforcer');
 	});
 
 });
 
 var DataRecorder = function(timer) {
 	
-	var responseTimes = [];
 	var reinforcerTimes = [];
+	var reinforcerDataPointsAll = [];
+	var reinforcerDataPointsVisible = [];
+	var responseTimes = [];
 	var responseDataPointsAll = [];
 	var responseDataPointsVisible = [];
 	var responseCount = 0;
@@ -74,14 +76,22 @@ var DataRecorder = function(timer) {
 		displayEvent('Reinforcer', reinforcerTime);
 	}
 
-	this.updateDataPoints = function(){
+	this.updateDataPoints = function(eventType){
 		var pendingDataPointTotal = dataPointAudit();
 		for (var i=responseDataPointsAll.length; i<pendingDataPointTotal; i++) {
+			reinforcerDataPointsAll.push({x: xAxisTime, y: null});
+			reinforcerDataPointsVisible.push({x: xAxisTime, y: null});
 			responseDataPointsAll.push({x: xAxisTime, y: responseCount});
 			responseDataPointsVisible.push({x: xAxisTime, y: responseCount});
 			xAxisTime = xAxisTime + 0.5;
 		};
-		chart.setDataPoints(responseDataPointsVisible);
+		if (eventType === 'Reinforcer') {
+			reinforcerDataPointsAll.pop();
+			reinforcerDataPointsVisible.pop();
+			reinforcerDataPointsAll.push({x: xAxisTime - 0.5, y: responseCount});
+			reinforcerDataPointsVisible.push({x: xAxisTime - 0.5, y: responseCount});
+		}
+		chart.setDataPoints(reinforcerDataPointsVisible, responseDataPointsVisible);
 		chart.updateChart();
 	}
 
@@ -150,16 +160,21 @@ var Chart = function(){
 	});
 	chart.render();
 
-	this.setDataPoints = function(data) {
-		if (data.length > 601) {
-			data.splice(0, (data.length-601));
+	this.setDataPoints = function(reinforcerData, responseData) {
+		if (responseData.length > 601) {
+			responseData.splice(0, (responseData.length-601));
+			reinforcerData.splice(0, (reinforcerData.length-601));
 			delete chart.options.axisX.maximum;
 		}
-		responseDataPoints = data;
+		responseDataPoints = responseData;
+		reinforcerDataPoints = reinforcerData;
 	}
 
 	this.updateChart = function() {
 		chart.options.data[0].dataPoints = responseDataPoints;
+		chart.options.data[1].dataPoints = reinforcerDataPoints;
+		console.log(responseDataPoints);
+		console.log(reinforcerDataPoints);
 		chart.render();
 	}
 
