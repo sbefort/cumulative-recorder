@@ -155,7 +155,8 @@ var Chart = function(){
 			dataPoints: reinforcerDataPoints,
 			lineThickness: 1,
 			lineDashType: "solid",
-			markerType: "cross"
+			markerType: "cross",
+			markerSize: 10
 		}]
 	});
 	chart.render();
@@ -173,8 +174,6 @@ var Chart = function(){
 	this.updateChart = function() {
 		chart.options.data[0].dataPoints = responseDataPoints;
 		chart.options.data[1].dataPoints = reinforcerDataPoints;
-		console.log(responseDataPoints);
-		console.log(reinforcerDataPoints);
 		chart.render();
 	}
 
