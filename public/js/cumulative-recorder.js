@@ -14,6 +14,7 @@ $(document).ready(function() {
 		$('#stop').show();
 		$('#reinforcer').show();
 		$('#response').show();
+		$('#reinforcer-response').show();
 
 		timer = new Timer();
 		dataRecorder = new DataRecorder(timer);
@@ -41,6 +42,14 @@ $(document).ready(function() {
 		e.preventDefault();
 		dataRecorder.recordReinforcerTime();
 		dataRecorder.updateDataPoints('Reinforcer');
+	});
+
+	$('#reinforcer-response').click(function(e) {
+		e.preventDefault();
+		dataRecorder.recordReinforcerTime();
+		dataRecorder.recordResponseTime();
+		dataRecorder.updateDataPoints('Reinforcer');
+		dataRecorder.incrementResponseCount();
 	});
 
 });
