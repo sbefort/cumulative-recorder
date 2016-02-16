@@ -214,7 +214,6 @@ var Chart = function(){
 	this.setDataPoints = function(data) {
 		if (data.length > 1001) {
 			dataPoints = data.slice(data.length-1001);
-			console.log(dataPoints);
 			delete chart.options.axisX.maximum;
 		}
 		else {
