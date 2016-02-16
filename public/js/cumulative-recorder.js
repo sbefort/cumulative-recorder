@@ -37,7 +37,7 @@ $(document).ready(function() {
 	// Update the chart data points a final time.
 	$('#stop').click(function(e) {
 		e.preventDefault();
-		$('button').prop('disabled', true);
+		$('.btn').prop('disabled', true);
 		clearInterval(timerId);
 		clearInterval(dataRecorderId);
 		dataRecorder.updateDataPoints();
@@ -182,6 +182,7 @@ var Chart = function(){
 	var chart = new CanvasJS.Chart("cumulative-recorder",
 	{
 		zoomEnabled: true,
+		exportEnabled: true,
 		title :{
 			text: "Cumulative Recorder Demo",
 			fontFamily: "Helvetica Neue,Helvetica,Arial,sans-serif",
